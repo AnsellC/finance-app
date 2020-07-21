@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+require('vuetifyjs-mix-extension');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,4 +12,4 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.ts('resources/js/app.ts', 'public/dist/js/app.js');
+mix.ts('resources/js/app.ts', 'public/dist/js/app.js').vuetify();
