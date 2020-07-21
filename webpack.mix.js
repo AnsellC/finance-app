@@ -12,4 +12,14 @@ require('vuetifyjs-mix-extension');
  |
  */
 
-mix.ts('resources/js/app.ts', 'public/dist/js/app.js').vuetify();
+mix.ts('resources/js/app.ts', 'public/dist/js').vuetify();
+mix.webpackConfig({
+    output: {
+        chunkFilename: 'dist/js/[name].js'
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'resources/js')
+        }
+    }
+});
