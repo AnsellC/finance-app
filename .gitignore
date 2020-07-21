@@ -1,8 +1,11 @@
 /node_modules
+/public/dist
 /public/hot
 /public/storage
+/public/mix-manifest.json
 /storage/*.key
 /vendor
+.DS_Store
 .idea/
 .env
 .env.backup
