@@ -13,13 +13,7 @@
             </v-app-bar>
             <v-main>
                 <v-container>
-                    <v-alert
-                        border="left"
-                        v-if="alertMessage.type !== null"
-                        :type="alertMessage.type"
-                    >
-                        {{ alertMessage.text }}
-                    </v-alert>
+                    <alert-messages></alert-messages>
                     <router-view></router-view>
                 </v-container>
             </v-main>

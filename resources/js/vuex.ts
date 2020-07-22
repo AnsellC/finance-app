@@ -10,7 +10,8 @@ const baseState = {
     // Alert message used globally
     alertMessage: {
         text: '',
-        type: null
+        type: null,
+        errors: [],
     } as AlertMessage
 };
 
