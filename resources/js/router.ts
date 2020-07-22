@@ -6,8 +6,29 @@ Vue.use(VueRouter);
 const routes: Array<RouteConfig> = [
     {
         path: '/',
-        name: 'home',
-        component: () => import('./views/Home.vue')
+        name: 'dashboard',
+        component: () => import('./views/Dashboard.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import('./views/Login.vue'),
+        meta: {
+            requiresGuest: true,
+            isSinglePage: true
+        }
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: () => import('./views/Register.vue'),
+        meta: {
+            requiresGuest: true,
+            isSinglePage: true
+        }
     }
 ];
 
