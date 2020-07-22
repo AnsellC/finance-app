@@ -4,7 +4,7 @@ import App from '@/App.vue';
 import router from '@/router';
 import vuetify from '@/plugins/vuetify';
 import store from '@/vuex';
-import { upperFirst, camelCase } from 'lodash'
+import * as _ from 'lodash'
 
 Vue.prototype.$axios = axios;
 Vue.prototype.$axios.defaults.baseURL = '/api';
@@ -18,8 +18,8 @@ const requireComponent = require.context(
 
 requireComponent.keys().forEach(fileName => {
     const componentConfig = requireComponent(fileName);
-    const componentName = upperFirst(
-        camelCase(
+    const componentName = _.upperFirst(
+        _.camelCase(
             fileName
                 .split('/')
                 .pop()!
