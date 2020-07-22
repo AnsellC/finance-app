@@ -30,10 +30,7 @@
                 </v-menu>
             </v-app-bar>
             <v-main>
-                <v-container>
-                    <alert-messages></alert-messages>
-                    <router-view></router-view>
-                </v-container>
+                <router-view></router-view>
             </v-main>
         </template>
     </v-app>
