@@ -52,6 +52,8 @@ export default class User {
         // get user data
         const userDataResponse = await axios.post(config.endpoints.auth.me);
 
+        this.name = userDataResponse.data.name;
+        this.email = userDataResponse.data.email;
 
         return store.dispatch('SET_USER_DATA', {
             isLoggedIn: true,

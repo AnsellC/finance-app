@@ -73,7 +73,7 @@ export default class LoginView extends BaseClass {
         this.loading = true;
         try {
             await this.$user.login(this.fields.email.value, this.fields.password.value);
-            this.$router.push('/dashboard');
+            document.location.href = '/';
         } catch (error) {
             this.handleError(error);
         }
