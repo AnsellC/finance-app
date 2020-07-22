@@ -28,7 +28,11 @@ export default new Vuex.Store({
     },
     actions: {
         SET_ALERT_MESSAGE(context, msg) {
-            context.commit('ALERT_MESSAGE', msg);
+            if (! msg.errors) {
+                context.commit('ALERT_MESSAGE', {...msg, errors: []});
+            } else {
+                context.commit('ALERT_MESSAGE', msg);
+            }
         }
     },
     modules: {}
