@@ -17,7 +17,38 @@ export default class BaseClass extends Vue {
     protected clearAlertMessage(): Promise<any> {
         return this.$store.dispatch('SET_ALERT_MESSAGE', {
             type: null,
-            text: ''
+            text: '',
+            errors: [],
         });
+    }
+
+    protected handleError(error: any) {
+        if (! error.response?.data?.message && !error.response?.data?.errors) {
+            return this.showAlertMessage({
+                text: 'An unknown error occurred.',
+                type: 'error',
+            });
+        }
+        const errorMessages: string[] = [];
+        let errorTitle = 'An error occurred.';
+
+        if (error.response?.data?.message) {
+            errorTitle = error.response.data.message;
+        }
+
+        if (error.response?.data?.errors) {
+            const keys = Object.keys(error.response.data.errors);
+            keys.forEach(key => {
+                error.response.data.errors[key].forEach((message: string) => {
+                    errorMessages.push(message);
+                })
+            })
+        }
+        return this.showAlertMessage({
+            text: errorTitle,
+            errors: errorMessages,
+            type: 'error',
+        });
+
     }
 }

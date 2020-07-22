@@ -3,6 +3,7 @@
         <v-container>
             <v-row>
                 <v-col cols="12" md="6" offset-md="3">
+                    <alert-messages></alert-messages>
                     <v-form ref="form" @submit.prevent="login()">
                         <v-card class="custom-shadow">
                             <v-card-title>Login</v-card-title>
@@ -71,12 +72,10 @@ export default class LoginView extends BaseClass {
         this.clearAlertMessage();
         this.loading = true;
         try {
-            await this.$axios.post('/api/auth/login');
+            const login = await this.$axios.post('/auth/login');
+            console.log(login);
         } catch (error) {
-            this.showAlertMessage({
-                type: 'error',
-                text: error.message
-            });
+            this.handleError(error);
         }
 
         this.loading = false;

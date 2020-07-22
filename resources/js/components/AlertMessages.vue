@@ -5,7 +5,7 @@
         :type="alertMessage.type"
         prominent
     >
-        <template v-if="alertMessage.errors.length > 0">
+        <template v-if="alertMessage.errors && alertMessage.errors.length > 0">
             <h2 class="text-h6">{{ alertMessage.text }}</h2>
             <ul>
                 <li v-for="(message, i) in alertMessage.errors" :key="i">

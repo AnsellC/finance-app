@@ -3,6 +3,7 @@
         <v-container>
             <v-row>
                 <v-col cols="12" md="6" offset-md="3">
+                    <alert-messages></alert-messages>
                     <v-form ref="form" @submit.prevent="register()">
                         <v-card class="custom-shadow">
                             <v-card-title>Create an Account</v-card-title>
@@ -36,8 +37,8 @@
                                     filled
                                     label="Confirm Password*"
                                     type="password"
-                                    v-model="fields.confirmPassword.value"
-                                    :rules="fields.confirmPassword.rule"
+                                    v-model="fields.password_confirmation.value"
+                                    :rules="fields.password_confirmation.rule"
                                 ></v-text-field>
                                 <div class="my-4 text-center">
                                     <router-link to="/login">
@@ -74,6 +75,10 @@ type Field = {
 
 @Component
 export default class LoginView extends BaseClass {
+    $refs!: {
+        form: HTMLFormElement;
+    }
+
     fields: Field = {
         name: {
             value: '',
@@ -89,7 +94,7 @@ export default class LoginView extends BaseClass {
             rule: [(v: string) => v.length > 0 || 'Invalid password.']
         },
 
-        confirmPassword: {
+        password_confirmation: {
             value: '',
             rule: [
                 (v: string) =>
@@ -101,6 +106,10 @@ export default class LoginView extends BaseClass {
 
     private async register() {
         this.clearAlertMessage();
+        if (! this.$refs.form.validate()) {
+            return;
+        }
+
         this.loading = true;
         try {
             const keys = Object.keys(this.fields);
@@ -112,11 +121,13 @@ export default class LoginView extends BaseClass {
             });
 
             const result = await this.$axios.post('/register', formData);
-        } catch (error) {
             this.showAlertMessage({
-                type: 'error',
-                text: error.message
-            });
+                text: 'Account successfully created, please login.',
+                type: 'success'
+            })
+
+        } catch (error) {
+            this.handleError(error);
         }
 
         this.loading = false;
