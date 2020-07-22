@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\TransactionCalculatorInterface;
+use App\Services\TransactionCalculatorService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(
+            TransactionCalculatorInterface::class,
+            TransactionCalculatorService::class
+        );
     }
 
     /**
@@ -23,6 +28,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 }

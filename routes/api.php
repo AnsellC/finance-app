@@ -8,6 +8,7 @@ Route::group([
     'middleware' => 'api',
 ], function () {
     Route::resource('transactions', 'TransactionController');
+    Route::get('balance', 'BalanceController@index');
 });
 
 Route::group([
