@@ -20,12 +20,49 @@ class TransactionsTest extends TestCase
         $result->assertStatus(201);
     }
 
-    private function createTransaction($token, $label = 'test label', $amount = '1000.00', $date = '2020-01-01 17:01')
+    /** @test */
+    public function a_user_can_list_all_transactions()
+    {
+        $data = [
+            [
+                'label' => 'Transaction 1',
+                'amount' => '1000.25',
+                'date' => '2020-01-01 17:00',
+            ],
+            [
+                'label' => 'Transaction 2',
+                'amount' => '-500.00',
+                'date' => '2020-01-02 23:00',
+            ],
+        ];
+
+        $token = $this->loginUser();
+        $this->createTransaction($token, $data[0]);
+        $this->createTransaction($token, $data[1]);
+        $result = $this->getJson('/api/transactions', [
+            'Authorization' => "Bearer {$token}",
+        ]);
+
+        $result->assertStatus(200);
+        $jsonResult = $result->json()['data'];
+        $this->assertEquals(count($data), count($jsonResult));
+    }
+
+    /** @test */
+    public function a_user_can_delete_a_transaction()
+    {
+    }
+
+    private function createTransaction($token, $data = [
+        'label' => 'Transaction',
+        'amount' => '1000.00',
+        'date' => '2020-01-01 17:01',
+    ])
     {
         return $this->postJson('/api/transactions', [
-            'label' => $label,
-            'amount' => $amount,
-            'date' => $date,
+            'label' => $data['label'],
+            'amount' => $data['amount'],
+            'date' => $data['date'],
         ], [
             'Authorization' => "Bearer {$token}",
         ]);

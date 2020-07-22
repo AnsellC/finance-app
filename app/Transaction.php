@@ -13,4 +13,10 @@ class Transaction extends Model
         'date',
         'type',
     ];
+
+    protected $casts = [
+        'user_id' => 'integer',
+        'date' => 'datetime',
+        'amount' => 'float',
+    ];
 }

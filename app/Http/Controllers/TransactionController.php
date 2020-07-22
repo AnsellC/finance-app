@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionRequest;
+use App\Http\Resources\TransactionResource;
 use App\Transaction;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+    public function index()
+    {
+        return TransactionResource::collection(Auth::user()->transactions()->paginate(100));
+    }
+
     public function store(TransactionRequest $request)
     {
         $validated = $request->validated();
@@ -19,6 +25,6 @@ class TransactionController extends Controller
             'type' => intval($validated['amount']) < 0 ? 'debit' : 'credit',
         ]);
 
-        return response()->json($transaction->toArray(), 201);
+        return response()->json(new TransactionResource($transaction), 201);
     }
 }
