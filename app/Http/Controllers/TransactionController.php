@@ -27,4 +27,17 @@ class TransactionController extends Controller
 
         return response()->json(new TransactionResource($transaction), 201);
     }
+
+    public function destroy(Transaction $transaction)
+    {
+        try {
+            $transaction->delete();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([], 204);
+    }
 }

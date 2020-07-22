@@ -45,12 +45,43 @@ class TransactionsTest extends TestCase
 
         $result->assertStatus(200);
         $jsonResult = $result->json()['data'];
-        $this->assertEquals(count($data), count($jsonResult));
+        $this->assertSameSize($data, $jsonResult);
     }
 
     /** @test */
     public function a_user_can_delete_a_transaction()
     {
+        $this->withoutExceptionHandling();
+        $data = [
+            [
+                'label' => 'Transaction 1',
+                'amount' => '1000.25',
+                'date' => '2020-01-01 17:00',
+            ],
+            [
+                'label' => 'Transaction 2',
+                'amount' => '-500.00',
+                'date' => '2020-01-02 23:00',
+            ],
+        ];
+
+        $token = $this->loginUser();
+        $this->createTransaction($token, $data[0]);
+        $this->createTransaction($token, $data[1]);
+
+        $result = $this->deleteJson('/api/transactions/1', [
+            'Authorization' => "Bearer {$token}",
+        ]);
+
+        $result->assertStatus(204);
+
+        $result = $this->getJson('/api/transactions', [
+            'Authorization' => "Bearer {$token}",
+        ]);
+
+        $result->assertStatus(200);
+        $jsonResult = $result->json()['data'];
+        $this->assertCount(1, $jsonResult);
     }
 
     private function createTransaction($token, $data = [
