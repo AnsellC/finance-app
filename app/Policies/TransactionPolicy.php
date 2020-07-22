@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Transaction;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionPolicy
 {
@@ -34,8 +35,18 @@ class TransactionPolicy
         return $user->id === $transaction->user_id;
     }
 
-    public function destroy(User $user, Transaction $transaction)
+    public function delete(User $user, Transaction $transaction)
     {
         return $user->id === $transaction->user_id;
+    }
+
+    public function create()
+    {
+        return Auth::check();
+    }
+
+    public function viewAny()
+    {
+        return Auth::check();
     }
 }
