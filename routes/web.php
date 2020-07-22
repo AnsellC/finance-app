@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
-
 // Catch all
-Route::get('/{any?}', function() {
+Route::get('/{any?}', function () {
     return view('spa');
 });
