@@ -72,8 +72,8 @@ export default class LoginView extends BaseClass {
         this.clearAlertMessage();
         this.loading = true;
         try {
-            const login = await this.$axios.post('/auth/login');
-            console.log(login);
+            await this.$user.login(this.fields.email.value, this.fields.password.value);
+            this.$router.push('/dashboard');
         } catch (error) {
             this.handleError(error);
         }
