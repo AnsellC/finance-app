@@ -5,7 +5,7 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
     {
-        path: '/',
+        path: '/dashboard',
         name: 'dashboard',
         component: () => import('./views/Dashboard.vue'),
         meta: {
