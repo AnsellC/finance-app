@@ -27,7 +27,7 @@ class TransactionRequest extends FormRequest
         return [
             'label' => 'required|min:1',
             'amount' => 'required|not_in:0|numeric',
-            'date' => 'date|date_format:"Y-m-d G:i"',
+            'date' => 'date|date_format:"Y-m-d H:i"',
         ];
     }
 }
