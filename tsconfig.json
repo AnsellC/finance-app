@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "typeRoots": ["./node_modules/@types", "./node_modules/vuetify/types"],
-        "target": "esnext",
+        "target": "es2018",
         "module": "esnext",
         "strict": true,
         "jsx": "preserve",
@@ -14,7 +14,7 @@
         "resolveJsonModule": true,
         "sourceMap": true,
         "baseUrl": ".",
-        "types": ["vuetify"],
+        "types": ["vuetify", "node", "webpack-env", "lodash"],
         "paths": {
             "@/*": ["resources/js/*"]
         },
