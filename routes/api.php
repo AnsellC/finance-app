@@ -6,6 +6,12 @@ Route::post('register', 'UserController@create');
 
 Route::group([
     'middleware' => 'api',
+], function () {
+    Route::resource('transactions', 'TransactionController');
+});
+
+Route::group([
+    'middleware' => 'api',
     'prefix' => 'auth',
 ], function () {
     Route::post('login', 'AuthController@login');
