@@ -21,11 +21,16 @@
     </v-app>
 </template>
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 import BaseClass from '@/base';
 
 @Component
-export default class App extends BaseClass {}
+export default class App extends BaseClass {
+    @Watch('$route', {immediate: true})
+    onRouteChanged() {
+        this.clearAlertMessage();
+    }
+}
 </script>
 
 <style lang="scss">
