@@ -51,7 +51,6 @@ class TransactionsTest extends TestCase
     /** @test */
     public function a_user_can_delete_a_transaction()
     {
-        $this->withoutExceptionHandling();
         $data = [
             [
                 'label' => 'Transaction 1',
@@ -82,6 +81,48 @@ class TransactionsTest extends TestCase
         $result->assertStatus(200);
         $jsonResult = $result->json()['data'];
         $this->assertCount(1, $jsonResult);
+    }
+
+    /** @test */
+    public function a_user_can_view_a_single_transaction()
+    {
+        $data = [
+            'label' => 'My Transaction',
+            'amount' => '500.00',
+            'date' => '2020-01-01 12:00',
+        ];
+
+        $token = $this->loginUser();
+        $this->createTransaction($token, $data);
+
+        $response = $this->getJson('/api/transactions/1');
+        $response->assertStatus(200);
+        $responseData = $response->json()['data'];
+
+        $this->assertEquals($data['label'], $responseData['label']);
+        $this->assertEquals($data['amount'], $responseData['amount']);
+    }
+
+    /** @test */
+    public function a_user_can_edit_a_transaction()
+    {
+        $this->withoutExceptionHandling();
+        $token = $this->loginUser();
+        $this->createTransaction($token, [
+            'label' => 'My Transaction',
+            'amount' => '500.00',
+            'date' => '2020-01-01 12:00',
+        ]);
+
+        $response = $this->putJson('/api/transactions/1', [
+            'label' => 'New Label',
+        ], [
+            'Authorization' => "Bearer {$token}",
+        ]);
+
+        $responseData = $response->json()['data'];
+        $response->assertStatus(200);
+        $this->assertEquals('New Label', $responseData['label']);
     }
 
     private function createTransaction($token, $data = [
