@@ -1,15 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', 'UserController@create');
 
 Route::group([
-
     'middleware' => 'api',
-    'prefix' => 'auth'
-
+    'prefix' => 'auth',
 ], function () {
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
