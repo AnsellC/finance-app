@@ -3,8 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('login', 'AuthController@login');
+Route::post('register', 'UserController@create');
 
-Route::middleware('auth:api')->group(function (){
+Route::group([
 
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
 });
