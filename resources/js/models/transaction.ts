@@ -41,7 +41,7 @@ export default class Transaction {
     }
 
 
-    public async save():  Promise<AxiosResponse<any>> {
+    public async save(): Promise<AxiosResponse<any>> {
         const endpoint = config.endpoints.transactions;
         const postData = {
             label: this.label,
@@ -54,5 +54,9 @@ export default class Transaction {
         }
 
         return axios.post(endpoint, postData);
+    }
+
+    public async delete(): Promise<AxiosResponse<any>> {
+        return axios.delete(`${config.endpoints.transactions}/${this.id}`);
     }
 }

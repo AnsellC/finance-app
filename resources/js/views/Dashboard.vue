@@ -2,23 +2,30 @@
     <div>
         <div class="indigo darken-4 py-8 white--text">
             <v-container>
-                <div class="d-flex justify-space-between align-center">
-                    <div class="d-flex align-center">
-                        <h2 class="text-h4 font-weight-medium mr-4">
-                            Your Balance
-                        </h2>
-                        <v-btn dark color="blue darken-3 font-weight-bold mr-4" @click="addEntryDialog.enabled = true">
-                            <v-icon class="mr-1">mdi-plus</v-icon>
-                            Add Entry
-                        </v-btn>
+                <v-row>
+                    <v-col cols="12" md="6" class="text-center text-md-left">
 
-                        <v-btn dark color="blue darken-3 font-weight-bold">
-                            <v-icon class="mr-1">mdi-upload</v-icon>
-                            Import CSV
-                        </v-btn>
-                    </div>
+                        <v-row align="center">
+                            <v-col cols="12" md="5">
+                                <h2 class="text-h4 font-weight-medium">
+                                    Your Balance
+                                </h2>
+                            </v-col>
+                            <v-col cols="12" md="7">
+                                <v-btn class="mr-1" dark color="blue darken-3 font-weight-bold" @click="addEntryDialog.enabled = true">
+                                    <v-icon class="mr-1">mdi-plus</v-icon>
+                                    Add Entry
+                                </v-btn>
+                                <v-btn dark color="blue darken-3 font-weight-bold">
+                                    <v-icon class="mr-1">mdi-upload</v-icon>
+                                    Import CSV
+                                </v-btn>
+                            </v-col>
 
-                    <div class="text-center">
+
+                        </v-row>
+                    </v-col>
+                    <v-col cols="12" md="6" class="text-center text-md-right">
                         <h2 class="text-uppercase indigo--text text--lighten-4">
                             Total Balance
                         </h2>
@@ -28,9 +35,9 @@
                         }]">
                             {{ totalBalance | currencyFormat }}
                         </span>
-                    </div>
+                    </v-col>
+                </v-row>
 
-                </div>
             </v-container>
         </div>
         <v-container>
@@ -52,28 +59,137 @@
                             </span>
                         </v-col>
                     </v-row>
-                    <v-card v-for="(transaction, x) in transactions[day].data" :key="`transaction-${x}`" class="rounded-lg mb-6 custom-shadow">
-                        <v-list class="px-4">
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-list-item-title class="font-weight-bold text-h6">
-                                        {{ transaction.label }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle class="grey--text">
-                                        {{ transaction.date.format('DD, MMMM YYYY [at] LT') }}
-                                    </v-list-item-subtitle>
-                                </v-list-item-content>
-                                <v-list-item-action-text class="text-h6">
-                                    <span v-if="transaction.type === 'debit'" class="red--text">
-                                         -{{ transaction.amount | currencyFormat }}
+                    <v-hover v-slot:default="{ hover }" v-for="(transaction, x) in transactions[day].data" :key="`transaction-${x}`">
+                        <v-card class="rounded-lg mb-6 custom-shadow">
+                            <v-row no-gutters align="center" class="pa-4">
+                                <v-col order="1" cols="12" md="8" class="text-center text-md-left">
+                                    <v-list color="transparent" class="pa-0">
+                                        <v-list-item>
+                                            <v-list-item-content>
+                                                <v-list-item-title class="font-weight-bold text-h6">
+                                                    {{ transaction.label }}
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle class="grey--text">
+                                                    {{ transaction.date.format('DD, MMMM YYYY [at] LT') }}
+                                                </v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list>
+
+                                </v-col>
+
+                                <v-col order="3" order-md="2" cols="12" md="2" :class="[
+                                    {'mt-12 mt-md-0': hover}, 'text-center text-md-right'
+                                    ]">
+                                    <span v-if="hover">
+                                        <v-btn icon class="mr-2" @click="editTransaction(transaction)">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                        <v-btn icon class="mr-2" @click="deleteTransaction(transaction)">
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
                                     </span>
+                                </v-col>
+                                <v-col order="2" order-md="3" cols="12" md="2" class="text-center text-md-right text-h6">
+                                      <span v-if="transaction.type === 'debit'" class="red--text">
+                                             -{{ transaction.amount | currencyFormat }}
+                                        </span>
                                     <span v-else>
-                                        +{{ transaction.amount | currencyFormat }}
-                                    </span>
-                                </v-list-item-action-text>
-                            </v-list-item>
-                        </v-list>
-                    </v-card>
+                                            +{{ transaction.amount | currencyFormat }}
+                                        </span>
+                                </v-col>
+                            </v-row>
+
+
+                                <template v-if="editing.transaction.id === transaction.id">
+
+                                    <v-divider></v-divider>
+                                    <div class="pa-6">
+                                        <v-row>
+                                            <v-col cols="12" md="8" offset-md="2">
+                                                <v-row>
+                                                    <v-col cols="12" md="6">
+                                                        <v-text-field
+                                                            v-model="editing.label"
+                                                            outlined
+                                                            label="Label*">
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12" md="6">
+                                                        <v-text-field
+                                                            v-model="editing.amount"
+                                                            outlined
+                                                            label="Amount*">
+                                                        </v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="6">
+                                                        <v-menu
+                                                            :close-on-content-click="false"
+                                                            v-model="editing.dateMenu"
+                                                            offset-y
+                                                            min-width="290px">
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                                <v-text-field
+                                                                    :rules="fields.date.rule"
+                                                                    v-bind="attrs"
+                                                                    v-on="on"
+                                                                    readonly
+                                                                    v-model="editing.date"
+                                                                    outlined
+                                                                    label="Date*"
+                                                                    placeholder="2020-01-01">
+                                                                </v-text-field>
+                                                            </template>
+                                                            <v-date-picker
+                                                                v-model="editing.date"
+                                                                scrollable
+                                                                @input="editing.dateMenu = false">
+                                                            </v-date-picker>
+                                                        </v-menu>
+                                                    </v-col>
+                                                    <v-col cols="6">
+                                                        <v-menu
+                                                            :close-on-content-click="false"
+                                                            v-model="editing.timeMenu"
+                                                            offset-y
+                                                            min-width="290px">
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                                <v-text-field
+                                                                    :rules="fields.time.rule"
+                                                                    v-bind="attrs"
+                                                                    v-on="on"
+                                                                    readonly
+                                                                    v-model="editing.time"
+                                                                    outlined label="Time*"
+                                                                    placeholder="8:00">
+                                                                </v-text-field>
+                                                            </template>
+                                                            <v-time-picker v-model="editing.time">
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn text
+                                                                       color="primary"
+                                                                       @click="editing.timeMenu = false">
+                                                                    Done
+                                                                </v-btn>
+                                                            </v-time-picker>
+                                                        </v-menu>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+                                    <v-divider></v-divider>
+                                    <div class="pa-6 text-right">
+                                        <v-btn :disabled="editing.loading" class="font-weight-bold mr-2" large depressed dark @click="editTransaction(null)" color="blue lighten-3">Cancel</v-btn>
+                                        <v-btn @click="saveEdit()" :loading="editing.loading" class="font-weight-bold" large depressed dark color="blue darken-3">Update Entry</v-btn>
+                                    </div>
+
+                                </template>
+
+
+
+                        </v-card>
+                    </v-hover>
                 </div>
             </template>
         </v-container>
@@ -88,29 +204,24 @@
                         </v-text-field>
                         <v-row>
                             <v-col cols="6">
-                                <v-menu :close-on-content-click="false" ref="dateMenu" v-model="addEntryDialog.dateMenu" :return-value.sync="fields.date.value" offset-y width="300px">
+                                <v-menu :close-on-content-click="false" v-model="addEntryDialog.dateMenu" offset-y min-width="290px">
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field :rules="fields.date.rule" v-bind="attrs" v-on="on" readonly v-model="fields.date.value" outlined label="Date*" placeholder="2020-01-01"></v-text-field>
                                     </template>
-                                    <v-date-picker v-model="fields.date.value" no-title scrollable>
-                                        <v-spacer></v-spacer>
-                                        <v-btn text color="primary" @click="addEntryDialog.dateMenu = false">Cancel</v-btn>
-                                        <v-btn text color="primary" @click="$refs.dateMenu.save(fields.date.value)">OK</v-btn>
+                                    <v-date-picker v-model="fields.date.value" scrollable @input="addEntryDialog.dateMenu = false">
                                     </v-date-picker>
                                 </v-menu>
                             </v-col>
                             <v-col cols="6">
-                                <v-menu :close-on-content-click="false" ref="timeMenu" v-model="addEntryDialog.timeMenu" :return-value.sync="fields.time.value" offset-y width="300px">
+                                <v-menu :close-on-content-click="false" ref="timeMenu" v-model="addEntryDialog.timeMenu" offset-y min-width="290px">
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field :rules="fields.time.rule" v-bind="attrs" v-on="on" readonly v-model="fields.time.value" outlined label="Time*" placeholder="8:00"></v-text-field>
                                     </template>
                                     <v-time-picker v-model="fields.time.value">
                                         <v-spacer></v-spacer>
-                                        <v-btn text color="primary" @click="addEntryDialog.timeMenu = false">Cancel</v-btn>
-                                        <v-btn text color="primary" @click="$refs.timeMenu.save(fields.time.value)">OK</v-btn>
+                                        <v-btn text color="primary" @click="addEntryDialog.timeMenu = false">Done</v-btn>
                                     </v-time-picker>
                                 </v-menu>
-
                             </v-col>
                         </v-row>
                         <v-text-field :rules="fields.amount.rule" v-model="fields.amount.value" outlined label="Amount*" placeholder="500.00"></v-text-field>
@@ -122,7 +233,22 @@
                     </v-card-actions>
                 </v-form>
             </v-card>
+        </v-dialog>
 
+        <v-dialog v-model="deleteTransactionDialog.enabled" width="500">
+            <v-card>
+                <v-card-title>
+                    Delete confirmation
+                </v-card-title>
+                <v-card-text>
+                    Are you sure you want to delete <strong>{{ deleteTransactionDialog.transaction.label }}</strong>?
+                </v-card-text>
+                <v-card-actions class="pa-6">
+                    <v-spacer></v-spacer>
+                    <v-btn :disabled="deleteTransactionDialog.loading" class="font-weight-bold mr-2" large depressed dark @click="deleteTransactionDialog.enabled = false" color="blue lighten-3">Cancel</v-btn>
+                    <v-btn @click="confirmDeleteTransaction()" :loading="deleteTransactionDialog.loading" class="font-weight-bold" large depressed dark color="blue darken-3">Yes, Delete it</v-btn>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
     </div>
 </template>
@@ -151,11 +277,29 @@
             addEntryForm: HTMLFormElement;
         }
         totalBalance = 0;
+
         addEntryDialog = {
             enabled: false,
             loading: false,
             dateMenu: false,
             timeMenu: false,
+        };
+
+        deleteTransactionDialog = {
+            enabled: false,
+            loading: false,
+            transaction: {} as Transaction,
+        };
+
+        editing = {
+            loading: false,
+            label: '',
+            dateMenu: false,
+            timeMenu: false,
+            date: '',
+            time: '',
+            amount: 0,
+            transaction: {} as Transaction
         };
 
         fields = {
@@ -267,6 +411,74 @@
             this.addEntryDialog.loading = false;
         }
 
+        private deleteTransaction(transaction: Transaction) {
+            this.deleteTransactionDialog.enabled = true;
+            this.deleteTransactionDialog.transaction = transaction;
+        }
+
+        private async confirmDeleteTransaction() {
+            this.deleteTransactionDialog.loading = true;
+            try {
+                await this.deleteTransactionDialog.transaction.delete();
+                this.loadTransactions();
+            }
+            catch(error) {
+                this.handleError(error);
+            }
+            this.deleteTransactionDialog.loading = false;
+            this.deleteTransactionDialog.enabled = false;
+
+        }
+
+        private editTransaction(transaction: Transaction | null) {
+            if (!transaction) {
+                this.resetEditingModel();
+                return;
+            }
+
+            this.editing = {
+                loading: false,
+                amount: transaction.type === 'debit' ? -Math.abs(transaction.amount) : transaction.amount,
+                label: transaction.label,
+                timeMenu: false,
+                dateMenu: false,
+                transaction: transaction,
+                date: transaction.date.clone().format('YYYY-MM-DD'),
+                time: transaction.date.clone().format('HH:mm')
+            }
+        }
+
+        private async saveEdit() {
+            const transaction = this.editing.transaction;
+            transaction.label = this.editing.label;
+            transaction.amount = Math.abs(this.editing.amount);
+            transaction.type = this.editing.amount > 0 ? 'credit' : 'debit';
+            transaction.date = moment(`${this.editing.date} ${this.editing.time}`);
+            this.editing.loading = true;
+            try {
+                await transaction.save();
+                this.resetEditingModel();
+                this.loadTransactions();
+            }catch(error) {
+                this.handleError(error);
+            }
+            this.editing.loading = false;
+
+        }
+
+
+        private resetEditingModel() {
+            this.editing = {
+                loading: false,
+                amount: 0,
+                label: '',
+                timeMenu: false,
+                dateMenu: false,
+                transaction: {} as Transaction,
+                date: '',
+                time: '',
+            }
+        }
 
     }
 </script>
