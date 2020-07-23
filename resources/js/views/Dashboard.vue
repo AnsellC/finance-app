@@ -41,156 +41,164 @@
             </v-container>
         </div>
         <v-container>
-            <div v-if="loading" style="height: calc(100vh - 228px);" class="d-flex align-center justify-center">
+            <div v-if="loading" style="height: calc(100vh - 252px);" class="d-flex align-center justify-center">
                 <v-progress-circular indeterminate color="blue"></v-progress-circular>
             </div>
             <template v-else>
-                <div class="my-6" v-for="(day, i) in Object.keys(transactions)" :key="`day-${i}`">
-                    <v-row align="center">
-                        <v-col cols="6" class="pl-6 font-weight-bold grey--text text-uppercase">
-                            {{ day }}
-                        </v-col>
-                        <v-col cols="6" class="pr-6 text-right font-weight-bold grey--text text-uppercase text-h6">
-                            <span :class="[{
-                                'green--text': transactions[day].amount > 0,
-                                'red--text': transactions[day].amount < 0
-                            }]">
-                                {{ transactions[day].amount | currencyFormat }}
-                            </span>
-                        </v-col>
-                    </v-row>
-                    <v-hover v-slot:default="{ hover }" v-for="(transaction, x) in transactions[day].data" :key="`transaction-${x}`">
-                        <v-card class="rounded-lg mb-6 custom-shadow">
-                            <v-row no-gutters align="center" class="pa-4">
-                                <v-col order="1" cols="12" md="8" class="text-center text-md-left">
-                                    <v-list color="transparent" class="pa-0">
-                                        <v-list-item>
-                                            <v-list-item-content>
-                                                <v-list-item-title class="font-weight-bold text-h6">
-                                                    {{ transaction.label }}
-                                                </v-list-item-title>
-                                                <v-list-item-subtitle class="grey--text">
-                                                    {{ transaction.date.format('DD, MMMM YYYY [at] LT') }}
-                                                </v-list-item-subtitle>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                    </v-list>
+                <template v-if="Object.keys(transactions).length > 0">
+                    <div class="my-6" v-for="(day, i) in Object.keys(transactions)" :key="`day-${i}`">
+                        <v-row align="center">
+                            <v-col cols="6" class="pl-6 font-weight-bold grey--text text-uppercase">
+                                {{ day }}
+                            </v-col>
+                            <v-col cols="6" class="pr-6 text-right font-weight-bold grey--text text-uppercase text-h6">
+                                <span :class="[{
+                                    'green--text': transactions[day].amount > 0,
+                                    'red--text': transactions[day].amount < 0
+                                }]">
+                                    {{ transactions[day].amount | currencyFormat }}
+                                </span>
+                            </v-col>
+                        </v-row>
+                        <v-hover v-slot:default="{ hover }" v-for="(transaction, x) in transactions[day].data" :key="`transaction-${x}`">
+                            <v-card class="rounded-lg mb-6 custom-shadow">
+                                <v-row no-gutters align="center" class="pa-4">
+                                    <v-col order="1" cols="12" md="8" class="text-center text-md-left">
+                                        <v-list color="transparent" class="pa-0">
+                                            <v-list-item>
+                                                <v-list-item-content>
+                                                    <v-list-item-title class="font-weight-bold text-h6">
+                                                        {{ transaction.label }}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle class="grey--text">
+                                                        {{ transaction.date.format('DD, MMMM YYYY [at] LT') }}
+                                                    </v-list-item-subtitle>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
 
-                                </v-col>
+                                    </v-col>
 
-                                <v-col order="3" order-md="2" cols="12" md="2" :class="[
-                                    {'mt-12 mt-md-0': hover}, 'text-center text-md-right'
-                                    ]">
-                                    <span v-if="hover">
-                                        <v-btn icon class="mr-2" @click="editTransaction(transaction)">
-                                            <v-icon>mdi-pencil</v-icon>
-                                        </v-btn>
-                                        <v-btn icon class="mr-2" @click="deleteTransaction(transaction)">
-                                            <v-icon>mdi-delete</v-icon>
-                                        </v-btn>
-                                    </span>
-                                </v-col>
-                                <v-col order="2" order-md="3" cols="12" md="2" class="text-center text-md-right text-h6">
-                                      <span v-if="transaction.type === 'debit'" class="red--text">
-                                             -{{ transaction.amount | currencyFormat }}
+                                    <v-col order="3" order-md="2" cols="12" md="2" :class="[
+                                        {'mt-12 mt-md-0': hover}, 'text-center text-md-right'
+                                        ]">
+                                        <span v-if="hover">
+                                            <v-btn icon class="mr-2" @click="editTransaction(transaction)">
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                            <v-btn icon class="mr-2" @click="deleteTransaction(transaction)">
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
                                         </span>
-                                    <span v-else>
-                                            +{{ transaction.amount | currencyFormat }}
-                                        </span>
-                                </v-col>
-                            </v-row>
+                                    </v-col>
+                                    <v-col order="2" order-md="3" cols="12" md="2" class="text-center text-md-right text-h6">
+                                          <span v-if="transaction.type === 'debit'" class="red--text">
+                                                 -{{ transaction.amount | currencyFormat }}
+                                            </span>
+                                        <span v-else>
+                                                +{{ transaction.amount | currencyFormat }}
+                                            </span>
+                                    </v-col>
+                                </v-row>
 
 
-                                <template v-if="editing.transaction.id === transaction.id">
+                                    <template v-if="editing.transaction.id === transaction.id">
 
-                                    <v-divider></v-divider>
-                                    <div class="pa-6">
-                                        <v-row>
-                                            <v-col cols="12" md="8" offset-md="2">
-                                                <v-row>
-                                                    <v-col cols="12" md="6">
-                                                        <v-text-field
-                                                            v-model="editing.label"
-                                                            outlined
-                                                            label="Label*">
-                                                        </v-text-field>
-                                                    </v-col>
-                                                    <v-col cols="12" md="6">
-                                                        <v-text-field
-                                                            v-model="editing.amount"
-                                                            outlined
-                                                            label="Amount*">
-                                                        </v-text-field>
-                                                    </v-col>
-                                                    <v-col cols="6">
-                                                        <v-menu
-                                                            :close-on-content-click="false"
-                                                            v-model="editing.dateMenu"
-                                                            offset-y
-                                                            min-width="290px">
-                                                            <template v-slot:activator="{ on, attrs }">
-                                                                <v-text-field
-                                                                    :rules="fields.date.rule"
-                                                                    v-bind="attrs"
-                                                                    v-on="on"
-                                                                    readonly
+                                        <v-divider></v-divider>
+                                        <div class="pa-6">
+                                            <v-row>
+                                                <v-col cols="12" md="8" offset-md="2">
+                                                    <v-row>
+                                                        <v-col cols="12" md="6">
+                                                            <v-text-field
+                                                                v-model="editing.label"
+                                                                outlined
+                                                                label="Label*">
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="12" md="6">
+                                                            <v-text-field
+                                                                v-model="editing.amount"
+                                                                outlined
+                                                                label="Amount*">
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6">
+                                                            <v-menu
+                                                                :close-on-content-click="false"
+                                                                v-model="editing.dateMenu"
+                                                                offset-y
+                                                                min-width="290px">
+                                                                <template v-slot:activator="{ on, attrs }">
+                                                                    <v-text-field
+                                                                        :rules="fields.date.rule"
+                                                                        v-bind="attrs"
+                                                                        v-on="on"
+                                                                        readonly
+                                                                        v-model="editing.date"
+                                                                        outlined
+                                                                        label="Date*"
+                                                                        placeholder="2020-01-01">
+                                                                    </v-text-field>
+                                                                </template>
+                                                                <v-date-picker
                                                                     v-model="editing.date"
-                                                                    outlined
-                                                                    label="Date*"
-                                                                    placeholder="2020-01-01">
-                                                                </v-text-field>
-                                                            </template>
-                                                            <v-date-picker
-                                                                v-model="editing.date"
-                                                                scrollable
-                                                                @input="editing.dateMenu = false">
-                                                            </v-date-picker>
-                                                        </v-menu>
-                                                    </v-col>
-                                                    <v-col cols="6">
-                                                        <v-menu
-                                                            :close-on-content-click="false"
-                                                            v-model="editing.timeMenu"
-                                                            offset-y
-                                                            min-width="290px">
-                                                            <template v-slot:activator="{ on, attrs }">
-                                                                <v-text-field
-                                                                    :rules="fields.time.rule"
-                                                                    v-bind="attrs"
-                                                                    v-on="on"
-                                                                    readonly
-                                                                    v-model="editing.time"
-                                                                    outlined label="Time*"
-                                                                    placeholder="8:00">
-                                                                </v-text-field>
-                                                            </template>
-                                                            <v-time-picker v-model="editing.time">
-                                                                <v-spacer></v-spacer>
-                                                                <v-btn text
-                                                                       color="primary"
-                                                                       @click="editing.timeMenu = false">
-                                                                    Done
-                                                                </v-btn>
-                                                            </v-time-picker>
-                                                        </v-menu>
-                                                    </v-col>
-                                                </v-row>
-                                            </v-col>
-                                        </v-row>
-                                    </div>
-                                    <v-divider></v-divider>
-                                    <div class="pa-6 text-right">
-                                        <v-btn :disabled="editing.loading" class="font-weight-bold mr-2" large depressed dark @click="editTransaction(null)" color="blue lighten-3">Cancel</v-btn>
-                                        <v-btn @click="saveEdit()" :loading="editing.loading" class="font-weight-bold" large depressed dark color="blue darken-3">Update Entry</v-btn>
-                                    </div>
+                                                                    scrollable
+                                                                    @input="editing.dateMenu = false">
+                                                                </v-date-picker>
+                                                            </v-menu>
+                                                        </v-col>
+                                                        <v-col cols="6">
+                                                            <v-menu
+                                                                :close-on-content-click="false"
+                                                                v-model="editing.timeMenu"
+                                                                offset-y
+                                                                min-width="290px">
+                                                                <template v-slot:activator="{ on, attrs }">
+                                                                    <v-text-field
+                                                                        :rules="fields.time.rule"
+                                                                        v-bind="attrs"
+                                                                        v-on="on"
+                                                                        readonly
+                                                                        v-model="editing.time"
+                                                                        outlined label="Time*"
+                                                                        placeholder="8:00">
+                                                                    </v-text-field>
+                                                                </template>
+                                                                <v-time-picker v-model="editing.time">
+                                                                    <v-spacer></v-spacer>
+                                                                    <v-btn text
+                                                                           color="primary"
+                                                                           @click="editing.timeMenu = false">
+                                                                        Done
+                                                                    </v-btn>
+                                                                </v-time-picker>
+                                                            </v-menu>
+                                                        </v-col>
+                                                    </v-row>
+                                                </v-col>
+                                            </v-row>
+                                        </div>
+                                        <v-divider></v-divider>
+                                        <div class="pa-6 text-right">
+                                            <v-btn :disabled="editing.loading" class="font-weight-bold mr-2" large depressed dark @click="editTransaction(null)" color="blue lighten-3">Cancel</v-btn>
+                                            <v-btn @click="saveEdit()" :loading="editing.loading" class="font-weight-bold" large depressed dark color="blue darken-3">Update Entry</v-btn>
+                                        </div>
 
-                                </template>
+                                    </template>
 
 
 
-                        </v-card>
-                    </v-hover>
-                </div>
+                            </v-card>
+                        </v-hover>
+                    </div>
+                </template>
+                <template v-else>
+                    <v-sheet color="blue-grey lighten-4" style="height: 500px" class="rounded-xl blue-grey--text text--darken-1 flex-column d-flex align-center text-center justify-center font-weight-medium text-h6">
+                        <v-icon x-large color="blue-grey darken-1">mdi-package-variant</v-icon>
+                        No entries yet! Click "add entry" to create one.
+                    </v-sheet>
+                </template>
             </template>
         </v-container>
 
