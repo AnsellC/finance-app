@@ -6,7 +6,8 @@ const config = {
         auth: {
             login: '/auth/login',
             me: '/auth/me'
-        }
+        },
+        transactions: '/transactions',
     }
 }
 
