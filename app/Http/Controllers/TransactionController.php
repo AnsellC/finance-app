@@ -44,12 +44,13 @@ class TransactionController extends Controller
     public function update(Transaction $transaction, TransactionUpdateRequest $request)
     {
         $validated = $request->validated();
-        if (!$transaction->update([
-            'label' => $validated['label'],
-            'amount' => abs($validated['amount']),
-            'date' => $validated['date'],
-            'type' => intval($validated['amount']) < 0 ? 'debit' : 'credit',
-        ])) {
+
+        if (isset($validated['amount'])) {
+            $validated['amount'] = abs($validated['amount']);
+            $validated['type'] = intval($validated['amount']) < 0 ? 'debit' : 'credit';
+        }
+
+        if (!$transaction->update($validated)) {
             return response()->json([
                 'message' => 'Failed to updated transaction.',
             ], 400);
