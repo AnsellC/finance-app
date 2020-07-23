@@ -16,7 +16,7 @@ mix.ts('resources/js/app.ts', 'public/dist/js').vuetify().sourceMaps();
 mix.webpackConfig({
     devtool: 'source-map',
     output: {
-        chunkFilename: 'dist/js/[name].js'
+        chunkFilename: 'dist/js/[name].[hash].js'
     },
     resolve: {
         alias: {
