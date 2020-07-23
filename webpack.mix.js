@@ -12,8 +12,9 @@ require('vuetifyjs-mix-extension');
  |
  */
 
-mix.ts('resources/js/app.ts', 'public/dist/js').vuetify();
+mix.ts('resources/js/app.ts', 'public/dist/js').vuetify().sourceMaps();
 mix.webpackConfig({
+    devtool: 'source-map',
     output: {
         chunkFilename: 'dist/js/[name].js'
     },
