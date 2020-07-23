@@ -50,6 +50,7 @@
             </v-container>
         </div>
         <v-container>
+            <alert-messages class="mb-6"></alert-messages>
             <div
                 v-if="loading"
                 style="height: calc(100vh - 252px);"
@@ -191,173 +192,191 @@
                                     </v-col>
                                 </v-row>
 
-                                <template
-                                    v-if="
-                                        editing.transaction.id ===
-                                            transaction.id
-                                    "
+                                <v-form
+                                    :ref="`editForm-${transaction.id}`"
+                                    @submit.prevent="saveEdit()"
                                 >
-                                    <v-divider></v-divider>
-                                    <div class="pa-6">
-                                        <v-row>
-                                            <v-col
-                                                cols="12"
-                                                md="8"
-                                                offset-md="2"
-                                            >
-                                                <v-row>
-                                                    <v-col cols="12" md="6">
-                                                        <v-text-field
-                                                            v-model="
-                                                                editing.label
-                                                            "
-                                                            outlined
-                                                            label="Label*"
-                                                        >
-                                                        </v-text-field>
-                                                    </v-col>
-                                                    <v-col cols="12" md="6">
-                                                        <v-text-field
-                                                            v-model="
-                                                                editing.amount
-                                                            "
-                                                            outlined
-                                                            label="Amount*"
-                                                        >
-                                                        </v-text-field>
-                                                    </v-col>
-                                                    <v-col cols="6">
-                                                        <v-menu
-                                                            :close-on-content-click="
-                                                                false
-                                                            "
-                                                            v-model="
-                                                                editing.dateMenu
-                                                            "
-                                                            offset-y
-                                                            min-width="290px"
-                                                        >
-                                                            <template
-                                                                v-slot:activator="{
-                                                                    on,
-                                                                    attrs
-                                                                }"
+                                    <template
+                                        v-if="
+                                            editing.transaction.id ===
+                                                transaction.id
+                                        "
+                                    >
+                                        <v-divider></v-divider>
+                                        <div class="pa-6">
+                                            <v-row>
+                                                <v-col
+                                                    cols="12"
+                                                    md="8"
+                                                    offset-md="2"
+                                                >
+                                                    <v-row>
+                                                        <v-col cols="12" md="6">
+                                                            <v-text-field
+                                                                v-model="
+                                                                    editing.label
+                                                                "
+                                                                outlined
+                                                                label="Label*"
+                                                                :rules="
+                                                                    fields.label
+                                                                        .rule
+                                                                "
                                                             >
-                                                                <v-text-field
-                                                                    :rules="
-                                                                        fields
-                                                                            .date
-                                                                            .rule
-                                                                    "
-                                                                    v-bind="
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="12" md="6">
+                                                            <v-text-field
+                                                                v-model="
+                                                                    editing.amount
+                                                                "
+                                                                outlined
+                                                                label="Amount*"
+                                                                :rules="
+                                                                    fields
+                                                                        .amount
+                                                                        .rule
+                                                                "
+                                                            >
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6">
+                                                            <v-menu
+                                                                :close-on-content-click="
+                                                                    false
+                                                                "
+                                                                v-model="
+                                                                    editing.dateMenu
+                                                                "
+                                                                offset-y
+                                                                min-width="290px"
+                                                            >
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        on,
                                                                         attrs
-                                                                    "
-                                                                    v-on="on"
-                                                                    readonly
+                                                                    }"
+                                                                >
+                                                                    <v-text-field
+                                                                        :rules="
+                                                                            fields
+                                                                                .date
+                                                                                .rule
+                                                                        "
+                                                                        v-bind="
+                                                                            attrs
+                                                                        "
+                                                                        v-on="
+                                                                            on
+                                                                        "
+                                                                        readonly
+                                                                        v-model="
+                                                                            editing.date
+                                                                        "
+                                                                        outlined
+                                                                        label="Date*"
+                                                                        placeholder="2020-01-01"
+                                                                    >
+                                                                    </v-text-field>
+                                                                </template>
+                                                                <v-date-picker
                                                                     v-model="
                                                                         editing.date
                                                                     "
-                                                                    outlined
-                                                                    label="Date*"
-                                                                    placeholder="2020-01-01"
+                                                                    scrollable
+                                                                    @input="
+                                                                        editing.dateMenu = false
+                                                                    "
                                                                 >
-                                                                </v-text-field>
-                                                            </template>
-                                                            <v-date-picker
+                                                                </v-date-picker>
+                                                            </v-menu>
+                                                        </v-col>
+                                                        <v-col cols="6">
+                                                            <v-menu
+                                                                :close-on-content-click="
+                                                                    false
+                                                                "
                                                                 v-model="
-                                                                    editing.date
+                                                                    editing.timeMenu
                                                                 "
-                                                                scrollable
-                                                                @input="
-                                                                    editing.dateMenu = false
-                                                                "
+                                                                offset-y
+                                                                min-width="290px"
                                                             >
-                                                            </v-date-picker>
-                                                        </v-menu>
-                                                    </v-col>
-                                                    <v-col cols="6">
-                                                        <v-menu
-                                                            :close-on-content-click="
-                                                                false
-                                                            "
-                                                            v-model="
-                                                                editing.timeMenu
-                                                            "
-                                                            offset-y
-                                                            min-width="290px"
-                                                        >
-                                                            <template
-                                                                v-slot:activator="{
-                                                                    on,
-                                                                    attrs
-                                                                }"
-                                                            >
-                                                                <v-text-field
-                                                                    :rules="
-                                                                        fields
-                                                                            .time
-                                                                            .rule
-                                                                    "
-                                                                    v-bind="
+                                                                <template
+                                                                    v-slot:activator="{
+                                                                        on,
                                                                         attrs
-                                                                    "
-                                                                    v-on="on"
-                                                                    readonly
+                                                                    }"
+                                                                >
+                                                                    <v-text-field
+                                                                        :rules="
+                                                                            fields
+                                                                                .time
+                                                                                .rule
+                                                                        "
+                                                                        v-bind="
+                                                                            attrs
+                                                                        "
+                                                                        v-on="
+                                                                            on
+                                                                        "
+                                                                        readonly
+                                                                        v-model="
+                                                                            editing.time
+                                                                        "
+                                                                        outlined
+                                                                        label="Time*"
+                                                                        placeholder="8:00"
+                                                                    >
+                                                                    </v-text-field>
+                                                                </template>
+                                                                <v-time-picker
                                                                     v-model="
                                                                         editing.time
                                                                     "
-                                                                    outlined
-                                                                    label="Time*"
-                                                                    placeholder="8:00"
                                                                 >
-                                                                </v-text-field>
-                                                            </template>
-                                                            <v-time-picker
-                                                                v-model="
-                                                                    editing.time
-                                                                "
-                                                            >
-                                                                <v-spacer></v-spacer>
-                                                                <v-btn
-                                                                    text
-                                                                    color="primary"
-                                                                    @click="
-                                                                        editing.timeMenu = false
-                                                                    "
-                                                                >
-                                                                    Done
-                                                                </v-btn>
-                                                            </v-time-picker>
-                                                        </v-menu>
-                                                    </v-col>
-                                                </v-row>
-                                            </v-col>
-                                        </v-row>
-                                    </div>
-                                    <v-divider></v-divider>
-                                    <div class="pa-6 text-right">
-                                        <v-btn
-                                            :disabled="editing.loading"
-                                            class="font-weight-bold mr-2"
-                                            large
-                                            depressed
-                                            dark
-                                            @click="editTransaction(null)"
-                                            color="blue lighten-3"
-                                            >Cancel</v-btn
-                                        >
-                                        <v-btn
-                                            @click="saveEdit()"
-                                            :loading="editing.loading"
-                                            class="font-weight-bold"
-                                            large
-                                            depressed
-                                            dark
-                                            color="blue darken-3"
-                                            >Update Entry</v-btn
-                                        >
-                                    </div>
-                                </template>
+                                                                    <v-spacer></v-spacer>
+                                                                    <v-btn
+                                                                        text
+                                                                        color="primary"
+                                                                        @click="
+                                                                            editing.timeMenu = false
+                                                                        "
+                                                                    >
+                                                                        Done
+                                                                    </v-btn>
+                                                                </v-time-picker>
+                                                            </v-menu>
+                                                        </v-col>
+                                                    </v-row>
+                                                </v-col>
+                                            </v-row>
+                                        </div>
+                                        <v-divider></v-divider>
+                                        <div class="pa-6 text-right">
+                                            <v-btn
+                                                :disabled="editing.loading"
+                                                class="font-weight-bold mr-2"
+                                                large
+                                                depressed
+                                                dark
+                                                @click="editTransaction(null)"
+                                                color="blue lighten-3"
+                                                >Cancel</v-btn
+                                            >
+                                            <v-btn
+                                                type="submit"
+                                                :loading="editing.loading"
+                                                class="font-weight-bold"
+                                                large
+                                                depressed
+                                                dark
+                                                color="blue darken-3"
+                                                >Update Entry</v-btn
+                                            >
+                                        </div>
+                                    </template>
+                                </v-form>
                             </v-card>
                         </v-hover>
                     </div>
@@ -550,6 +569,7 @@ interface DatabaseTransactionRecord {
 export default class App extends BaseClass {
     $refs!: {
         addEntryForm: HTMLFormElement;
+        [index: string]: HTMLFormElement;
     };
     totalBalance = 0;
 
@@ -604,7 +624,8 @@ export default class App extends BaseClass {
                 (v: string) =>
                     (v && Number.parseInt(v) !== 0) ||
                     'Amount cannot be equal to zero.',
-                (v: string) => (v && v.length > 0) || 'Invalid amount.'
+                (v: string) => (v && v.length > 0) || 'Invalid amount.',
+                (v: string) => !isNaN(parseFloat(v)) || 'Invalid number.'
             ]
         }
     };
@@ -612,6 +633,13 @@ export default class App extends BaseClass {
     transactions: {
         [index: string]: any;
     } = {};
+
+    @Watch('addEntryDialog.enabled')
+    onDialogActivated(value: boolean) {
+        if (value) {
+            this.clearAlertMessage();
+        }
+    }
 
     created() {
         this.loadTransactions();
@@ -685,6 +713,10 @@ export default class App extends BaseClass {
             this.$refs.addEntryForm.reset();
             this.loadTransactions();
             this.addEntryDialog.enabled = false;
+            this.showAlertMessage({
+                type: 'success',
+                text: 'Entry added successfully.'
+            });
         } catch (error) {
             this.handleError(error);
         }
@@ -697,10 +729,15 @@ export default class App extends BaseClass {
     }
 
     private async confirmDeleteTransaction() {
+        this.clearAlertMessage();
         this.deleteTransactionDialog.loading = true;
         try {
             await this.deleteTransactionDialog.transaction.delete();
             this.loadTransactions();
+            this.showAlertMessage({
+                type: 'success',
+                text: 'Entry deleted successfully.'
+            });
         } catch (error) {
             this.handleError(error);
         }
@@ -709,6 +746,7 @@ export default class App extends BaseClass {
     }
 
     private editTransaction(transaction: Transaction | null) {
+        this.clearAlertMessage();
         if (!transaction) {
             this.resetEditingModel();
             return;
@@ -730,16 +768,25 @@ export default class App extends BaseClass {
     }
 
     private async saveEdit() {
+        console.log(this.$refs);
+        const ref = `editForm-${this.editing.transaction.id}`;
+        console.log(ref);
+        if (!(this.$refs[ref][0] as HTMLFormElement).validate()) {
+            return;
+        }
         const transaction = this.editing.transaction;
         transaction.label = this.editing.label;
-        transaction.amount = Math.abs(this.editing.amount);
-        transaction.type = this.editing.amount > 0 ? 'credit' : 'debit';
+        transaction.amount = this.editing.amount;
         transaction.date = moment(`${this.editing.date} ${this.editing.time}`);
         this.editing.loading = true;
         try {
             await transaction.save();
             this.resetEditingModel();
             this.loadTransactions();
+            this.showAlertMessage({
+                type: 'success',
+                text: 'Entry updated successfully.'
+            });
         } catch (error) {
             this.handleError(error);
         }
