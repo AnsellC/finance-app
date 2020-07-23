@@ -1,6 +1,6 @@
-import config from "@/config";
+import config from '@/config';
 import axios from '@/plugins/axios';
-import store from '@/vuex'
+import store from '@/vuex';
 
 export default class User {
     id = '';
@@ -8,12 +8,10 @@ export default class User {
     email = '';
 
     public async login(email: string, password: string): Promise<any> {
-
         const response = await axios.post(config.endpoints.auth.login, {
             email: email,
             password: password
         });
-
 
         if (!response.data.access_token || !response.data.expires_in) {
             throw new Error('Failed to retrieve token data.');
@@ -22,10 +20,13 @@ export default class User {
         const accessToken = response.data.access_token;
         const expires = response.data.expires_in as number;
 
-        await localStorage.setItem(config.localStorageKey, JSON.stringify({
-            token: accessToken,
-            expires: expires,
-        }));
+        await localStorage.setItem(
+            config.localStorageKey,
+            JSON.stringify({
+                token: accessToken,
+                expires: expires
+            })
+        );
 
         return this.me(accessToken, expires);
     }
@@ -39,14 +40,13 @@ export default class User {
                 email: '',
                 auth: {
                     token: '',
-                    expires: '',
+                    expires: ''
                 }
             })
-        ])
+        ]);
     }
 
     public async me(token: string, expires: number): Promise<any> {
-
         axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
         // get user data
@@ -61,8 +61,8 @@ export default class User {
             email: userDataResponse.data.email,
             auth: {
                 token: token,
-                expires: expires,
+                expires: expires
             }
-        })
+        });
     }
 }

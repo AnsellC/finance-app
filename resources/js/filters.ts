@@ -1,5 +1,4 @@
-import Vue from 'vue'
-
+import Vue from 'vue';
 
 Vue.filter('currencyFormat', (value: number) => {
     return new Intl.NumberFormat('en-US', {

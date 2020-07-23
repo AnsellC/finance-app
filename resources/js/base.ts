@@ -18,15 +18,15 @@ export default class BaseClass extends Vue {
         return this.$store.dispatch('SET_ALERT_MESSAGE', {
             type: null,
             text: '',
-            errors: [],
+            errors: []
         });
     }
 
     protected handleError(error: any) {
-        if (! error.response?.data?.message && !error.response?.data?.errors) {
+        if (!error.response?.data?.message && !error.response?.data?.errors) {
             return this.showAlertMessage({
                 text: 'An unknown error occurred.',
-                type: 'error',
+                type: 'error'
             });
         }
         const errorMessages: string[] = [];
@@ -41,14 +41,13 @@ export default class BaseClass extends Vue {
             keys.forEach(key => {
                 error.response.data.errors[key].forEach((message: string) => {
                     errorMessages.push(message);
-                })
-            })
+                });
+            });
         }
         return this.showAlertMessage({
             text: errorTitle,
             errors: errorMessages,
-            type: 'error',
+            type: 'error'
         });
-
     }
 }

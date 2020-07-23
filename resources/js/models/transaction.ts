@@ -1,7 +1,7 @@
 import moment from 'moment';
 import axios from '@/plugins/axios';
 import config from '@/config';
-import {AxiosResponse} from 'axios';
+import { AxiosResponse } from 'axios';
 
 export default class Transaction {
     public id = 0;
@@ -13,7 +13,7 @@ export default class Transaction {
     public type: TransactionType = 'credit';
     private dates = ['date', 'updated_at', 'created_at'];
 
-    constructor( data: {
+    constructor(data: {
         id?: number;
         label: string;
         date: string;
@@ -29,24 +29,23 @@ export default class Transaction {
             if (this.dates.includes(key)) {
                 value = moment(data[key]);
             } else {
-               value = data[key];
+                value = data[key];
             }
 
             Object.assign(this, {
                 [key]: value
             });
-        })
+        });
 
         return this;
     }
-
 
     public async save(): Promise<AxiosResponse<any>> {
         const endpoint = config.endpoints.transactions;
         const postData = {
             label: this.label,
             amount: this.amount,
-            date: this.date.format('YYYY-MM-DD HH:mm'),
+            date: this.date.format('YYYY-MM-DD HH:mm')
         };
 
         if (this.id !== 0 && this.id) {

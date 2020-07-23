@@ -77,7 +77,7 @@ type Field = {
 export default class LoginView extends BaseClass {
     $refs!: {
         form: HTMLFormElement;
-    }
+    };
 
     fields: Field = {
         name: {
@@ -106,7 +106,7 @@ export default class LoginView extends BaseClass {
 
     private async register() {
         this.clearAlertMessage();
-        if (! this.$refs.form.validate()) {
+        if (!this.$refs.form.validate()) {
             return;
         }
 
@@ -124,8 +124,7 @@ export default class LoginView extends BaseClass {
             this.showAlertMessage({
                 text: 'Account successfully created, please login.',
                 type: 'success'
-            })
-
+            });
         } catch (error) {
             this.handleError(error);
         }

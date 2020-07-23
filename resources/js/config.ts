@@ -7,8 +7,8 @@ const config = {
             login: '/auth/login',
             me: '/auth/me'
         },
-        transactions: '/transactions',
+        transactions: '/transactions'
     }
-}
+};
 
 export default config;

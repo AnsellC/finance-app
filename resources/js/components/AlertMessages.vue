@@ -1,6 +1,5 @@
 <template>
     <v-alert
-
         v-if="alertMessage.type !== null"
         :type="alertMessage.type"
         prominent
@@ -19,9 +18,9 @@
     </v-alert>
 </template>
 <script lang="ts">
-    import { Component } from 'vue-property-decorator';
-    import BaseClass from '@/base';
+import { Component } from 'vue-property-decorator';
+import BaseClass from '@/base';
 
-    @Component
-    export default class App extends BaseClass {}
+@Component
+export default class App extends BaseClass {}
 </script>

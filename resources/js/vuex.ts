@@ -4,23 +4,21 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const baseState = {
-
     user: {
         isLoggedIn: false,
         name: '',
         email: '',
         auth: {
             token: '',
-            expires: '',
+            expires: ''
         }
     },
-
 
     // Alert message used globally
     alertMessage: {
         text: '',
         type: null,
-        errors: [],
+        errors: []
     } as AlertMessage
 };
 
@@ -42,8 +40,8 @@ export default new Vuex.Store({
     },
     actions: {
         SET_ALERT_MESSAGE(context, msg) {
-            if (! msg.errors) {
-                context.commit('ALERT_MESSAGE', {...msg, errors: []});
+            if (!msg.errors) {
+                context.commit('ALERT_MESSAGE', { ...msg, errors: [] });
             } else {
                 context.commit('ALERT_MESSAGE', msg);
             }

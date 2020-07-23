@@ -72,7 +72,10 @@ export default class LoginView extends BaseClass {
         this.clearAlertMessage();
         this.loading = true;
         try {
-            await this.$user.login(this.fields.email.value, this.fields.password.value);
+            await this.$user.login(
+                this.fields.email.value,
+                this.fields.password.value
+            );
             document.location.href = '/';
         } catch (error) {
             this.handleError(error);

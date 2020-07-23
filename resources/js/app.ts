@@ -4,10 +4,10 @@ import App from '@/App.vue';
 import router from '@/router';
 import vuetify from '@/plugins/vuetify';
 import store from '@/vuex';
-import * as _ from 'lodash'
-import '@/filters'
-import { UserPlugin } from "@/plugins/user";
-import config from "@/config";
+import * as _ from 'lodash';
+import '@/filters';
+import { UserPlugin } from '@/plugins/user';
+import config from '@/config';
 
 Vue.prototype.$axios = axios;
 Vue.use(UserPlugin);
@@ -35,13 +35,12 @@ requireComponent.keys().forEach(fileName => {
 
 (async () => {
     // Check if browser has token stored.
-    const storageToken = localStorage.getItem(config.localStorageKey)
+    const storageToken = localStorage.getItem(config.localStorageKey);
     if (storageToken) {
         const auth = JSON.parse(storageToken);
         try {
             await Vue.prototype.$user.me(auth.token, auth.expires);
-        }
-        catch(error) {
+        } catch (error) {
             localStorage.removeItem(config.localStorageKey);
         }
     }
@@ -70,5 +69,4 @@ requireComponent.keys().forEach(fileName => {
         vuetify,
         render: h => h(App)
     }).$mount('#app');
-
-})
+});
