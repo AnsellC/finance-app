@@ -5,7 +5,7 @@ import router from '@/router';
 import vuetify from '@/plugins/vuetify';
 import store from '@/vuex';
 import * as _ from 'lodash'
-import User from "@/models/user";
+import '@/filters'
 import { UserPlugin } from "@/plugins/user";
 import config from "@/config";
 
