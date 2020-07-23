@@ -16,16 +16,31 @@ class TransactionController extends Controller
         $this->authorizeResource(Transaction::class, 'transaction');
     }
 
+    /**
+     * Returns all the transactions for the logged in user.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index()
     {
         return TransactionResource::collection(Auth::user()->transactions()->paginate(100));
     }
 
+    /**
+     * Returns a specific transaction.
+     *
+     * @return TransactionResource
+     */
     public function show(Transaction $transaction)
     {
         return new TransactionResource($transaction);
     }
 
+    /**
+     * Updates a transaction.
+     *
+     * @return TransactionResource|\Illuminate\Http\JsonResponse
+     */
     public function update(Transaction $transaction, TransactionUpdateRequest $request)
     {
         $validated = $request->validated();
@@ -43,6 +58,11 @@ class TransactionController extends Controller
         return new TransactionResource($transaction->fresh());
     }
 
+    /**
+     * Creates a new transaction.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(TransactionRequest $request)
     {
         $validated = $request->validated();
@@ -57,6 +77,11 @@ class TransactionController extends Controller
         return response()->json(new TransactionResource($transaction), 201);
     }
 
+    /**
+     * Deletes a transaction.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(Transaction $transaction)
     {
         try {

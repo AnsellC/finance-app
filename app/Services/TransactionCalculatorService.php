@@ -7,7 +7,9 @@ use App\Contracts\TransactionCalculatorInterface;
 class TransactionCalculatorService implements TransactionCalculatorInterface
 {
     /**
-     * @param $transaction \Illuminate\Database\Eloquent\Collection
+     * Calculates the total of a collection of transactions.
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $transactions
      *
      * @return float
      */

@@ -14,6 +14,11 @@ class BalanceController extends Controller
         $this->calculator = $calculator;
     }
 
+    /**
+     * Returns the user's current balance.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         return response()->json([

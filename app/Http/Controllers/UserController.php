@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Registers a new user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(CreateUserRequest $request)
     {
         $validated = $request->validated();
